@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="24" failures="0" errors="0" time="0.872">
+  <testsuite name="BookController.createBook" errors="0" failures="0" skipped="0" timestamp="2025-09-11T07:24:20" time="0.795" tests="24">
+    <testcase classname="BookController.createBook should have a createBook function" name="BookController.createBook should have a createBook function" time="0.003">
+    </testcase>
+    <testcase classname="BookController.createBook should call BookModel.create" name="BookController.createBook should call BookModel.create" time="0.002">
+    </testcase>
+    <testcase classname="BookController.createBook should return 201 response code" name="BookController.createBook should return 201 response code" time="0">
+    </testcase>
+    <testcase classname="BookController.createBook It should return a response body" name="BookController.createBook It should return a response body" time="0.001">
+    </testcase>
+    <testcase classname="BookController.createBook It should handle error" name="BookController.createBook It should handle error" time="0.001">
+    </testcase>
+    <testcase classname="BookController.getBooks should have a getBooks function" name="BookController.getBooks should have a getBooks function" time="0.001">
+    </testcase>
+    <testcase classname="BookController.getBooks should call BookModel.find" name="BookController.getBooks should call BookModel.find" time="0.001">
+    </testcase>
+    <testcase classname="BookController.getBooks should return 200 and the books" name="BookController.getBooks should return 200 and the books" time="0.001">
+    </testcase>
+    <testcase classname="BookController.getBooks should call next with error when model throws" name="BookController.getBooks should call next with error when model throws" time="0.002">
+    </testcase>
+    <testcase classname="BookController.getBookById should have a getBookById function" name="BookController.getBookById should have a getBookById function" time="0.001">
+    </testcase>
+    <testcase classname="BookController.getBookById should call BookModel.findById with route parameter" name="BookController.getBookById should call BookModel.findById with route parameter" time="0.001">
+    </testcase>
+    <testcase classname="BookController.getBookById should return 200 and the book when found" name="BookController.getBookById should return 200 and the book when found" time="0.002">
+    </testcase>
+    <testcase classname="BookController.getBookById should return 404 when book not found" name="BookController.getBookById should return 404 when book not found" time="0.001">
+    </testcase>
+    <testcase classname="BookController.getBookById should call next with error when model throws" name="BookController.getBookById should call next with error when model throws" time="0.001">
+    </testcase>
+    <testcase classname="BookController.updateBook should have an updateBook function" name="BookController.updateBook should have an updateBook function" time="0.001">
+    </testcase>
+    <testcase classname="BookController.updateBook should call BookModel.findByIdAndUpdate with params and body" name="BookController.updateBook should call BookModel.findByIdAndUpdate with params and body" time="0.001">
+    </testcase>
+    <testcase classname="BookController.updateBook should return 200 and updated book when found" name="BookController.updateBook should return 200 and updated book when found" time="0.001">
+    </testcase>
+    <testcase classname="BookController.updateBook should return 404 when update target not found" name="BookController.updateBook should return 404 when update target not found" time="0.001">
+    </testcase>
+    <testcase classname="BookController.updateBook should call next with error when model throws" name="BookController.updateBook should call next with error when model throws" time="0.001">
+    </testcase>
+    <testcase classname="BookController.deleteBook should have a deleteBook function" name="BookController.deleteBook should have a deleteBook function" time="0">
+    </testcase>
+    <testcase classname="BookController.deleteBook should call BookModel.findByIdAndDelete with route parameter" name="BookController.deleteBook should call BookModel.findByIdAndDelete with route parameter" time="0.001">
+    </testcase>
+    <testcase classname="BookController.deleteBook should return 200 when deletion succeeds" name="BookController.deleteBook should return 200 when deletion succeeds" time="0">
+    </testcase>
+    <testcase classname="BookController.deleteBook should return 404 when book to delete is not found" name="BookController.deleteBook should return 404 when book to delete is not found" time="0.001">
+    </testcase>
+    <testcase classname="BookController.deleteBook should call next with error when model throws" name="BookController.deleteBook should call next with error when model throws" time="0.001">
+    </testcase>
+  </testsuite>
+</testsuites>
