@@ -22,13 +22,7 @@ jobs:
         run: npm ci
 
       - name: Run tests with coverage
-        run: |
-          npm test | tee full_output.txt
-
-          echo "Code coverage report:" >> $GITHUB_STEP_SUMMARY
-          echo "```" >> $GITHUB_STEP_SUMMARY
-          grep -A 100 "All files" full_output.txt >> $GITHUB_STEP_SUMMARY
-          echo "```" >> $GITHUB_STEP_SUMMARY
+        run: npm test |
 
       - name: Upload test results artifact
         uses: actions/upload-artifact@v4
