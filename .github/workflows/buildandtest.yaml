@@ -32,4 +32,4 @@ jobs:
           name: Jest Tests
           path: reports/junit.xml
           reporter: jest-junit
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
