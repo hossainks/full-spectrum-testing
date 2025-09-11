@@ -22,7 +22,9 @@ jobs:
         run: npm install
 
       - name: Run tests
-        run: npm test --silent
+        run: |
+          npm ci
+          npm test
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
@@ -37,4 +39,4 @@ jobs:
           name: Jest Tests
           path: reports/junit.xml
           reporter: jest-junit
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # token: ${{ secrets.GITHUB_TOKEN }}
