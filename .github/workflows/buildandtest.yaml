@@ -29,7 +29,9 @@ jobs:
         if: always()
         with:
           name: test-results
-          path: reports/junit.xml
+          path: |
+            reports/junit.xml
+            coverage
 
       - name: Publish Test Report
         uses: dorny/test-reporter@v2
