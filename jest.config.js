@@ -1,7 +1,10 @@
 module.exports = {
     testEnvironment: 'node',
-    testMatch: ['**/tests/**/*.spec.js'],
-    
+    testMatch: [
+        "**/tests/**/*.spec.js",
+        "**/tests/**/*.test.js"
+    ],
+
     // Coverage configuration
     collectCoverage: true,
     coverageDirectory: 'coverage',
@@ -9,7 +12,7 @@ module.exports = {
 
     // Reporters configuration
     reporters: [
-        'default', 
+        'default',
         ['jest-junit', {
             outputDirectory: './reports',
             outputName: 'junit.xml'

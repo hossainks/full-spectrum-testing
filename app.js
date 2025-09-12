@@ -8,7 +8,11 @@ mongodb.connect();
 const app = express();
 app.use(express.json());
 
-// Routes
+app.get('/health', (req, res) => {
+    res.status(200);
+    res.json({ "Status": "OK" });
+});
+
 app.use("/api/books", bookRoutes);
 
 // Error handling
