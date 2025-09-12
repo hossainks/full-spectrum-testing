@@ -22,7 +22,7 @@ jobs:
         run: npm ci
 
       - name: Run tests with coverage
-        run: npm test
+        run: npx jest --testMatch="**/*.spec.js"
 
       - name: Upload test results artifact
         uses: actions/upload-artifact@v4
