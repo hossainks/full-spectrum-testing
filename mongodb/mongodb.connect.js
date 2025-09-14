@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/bookdb';
 
 async function connect() {
     try {
-        await mongoose.connect('mongodb://root:passwordTest1234@localhost:27017/todos?authSource=admin')
-        //console.log('Connected to MongoDB');
+        await mongoose.connect(MONGO_URI)
+        console.log('Connected to MongoDB');
     } catch (error) {
         console.error('Error connecting to MongoDB:', error);
     }

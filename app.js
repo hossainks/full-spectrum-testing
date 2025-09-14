@@ -2,10 +2,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bookRoutes = require("./routes/bookRoutes");
 const mongodb = require('./mongodb/mongodb.connect');
+const cors = require('cors');
 
 mongodb.connect();
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.get('/health', (req, res) => {

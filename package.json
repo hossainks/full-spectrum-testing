@@ -8,12 +8,15 @@
   },
   "scripts": {
     "test": "npx jest",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "test:unit": "jest --testMatch='**/tests/unit/**/*.spec.js'",
+    "test:integration": "jest --testMatch='**/tests/integration/**/*.int.test.js'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "mongoose": "^8.18.1",
     "node-mocks-http": "^1.17.2"

@@ -1,15 +1,30 @@
 services:
+  server:
+    build: .
+    container_name: book_api
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/bookdb
+    networks:
+      - app_network
+  
   mongodb:
     image: mongo:6
-    container_name: mongo_book
+    container_name: mongo
     restart: always
     ports:
       - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: passwordTest1234
     volumes:
       - mongo_data:/data/db
+    networks:
+      - app_network
+
+networks:
+  app_network:
 
 volumes:
   mongo_data:
