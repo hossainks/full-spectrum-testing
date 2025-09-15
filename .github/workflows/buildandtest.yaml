@@ -33,11 +33,11 @@ jobs:
             reports/junit.xml
             coverage
 
-      - name: Publish Test Report
+      - name: Publish Unit Test Report
         uses: dorny/test-reporter@v2
         if: always()
         with:
-          name: Jest Tests
+          name: Unit Tests
           path: reports/junit.xml
           reporter: jest-junit
 
@@ -76,3 +76,11 @@ jobs:
           name: Integration-tets-results
           path: |
             reports/junit.xml
+
+      - name: Publish Integration Test Report
+        uses: dorny/test-reporter@v2
+        if: always()
+        with:
+          name: Integration Tests
+          path: reports/junit.xml
+          reporter: jest-junit
