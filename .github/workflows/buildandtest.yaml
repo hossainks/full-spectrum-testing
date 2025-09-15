@@ -40,3 +40,18 @@ jobs:
           name: Jest Tests
           path: reports/junit.xml
           reporter: jest-junit
+
+  integration-test:
+    needs: [unit-test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Lanuch server
+        run: |
+          docker compose up -d --build
+          npx wait-port http://localhost:3000/health -t 30000
+      
+      - name: Run integration tests
+        run: npx jest --testMatch="**/*.int.test.js"
