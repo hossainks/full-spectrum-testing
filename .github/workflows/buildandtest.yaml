@@ -28,7 +28,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-results
+          name: Unit-test-results
           path: |
             reports/junit.xml
             coverage
@@ -65,3 +65,14 @@ jobs:
       
       - name: Run integration tests
         run: npx jest --testMatch="**/*.int.test.js"
+
+      - name: Stop server
+        run: docker compose down
+
+      - name: Upload test results artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Integration-tets-results
+          path: |
+            reports/junit.xml
