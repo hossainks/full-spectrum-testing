@@ -18,17 +18,33 @@ jobs:
             https://api.github.com/repos/hossainks/k6-performance-test/dispatches \
             -d '{"event_type":"run-k6-tests"}'
 
-          # Get the latest run id triggered by repository_dispatch
-          run_id=$(
-          curl -s -H "Accept: application/vnd.github+json" \
-              -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" \
-              "https://api.github.com/repos/hossainks/k6-performance-test/actions/runs?event=repository_dispatch" \
-          | jq -r '.workflow_runs | sort_by(.created_at) | last.id')
+          # Wait until the new workflow run appears and get its ID
+          run_id=""
+          for i in {1..10}; do
+            run_id=$(curl -s -H "Accept: application/vnd.github+json" \
+                      -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" \
+                      "https://api.github.com/repos/hossainks/k6-performance-test/actions/workflows/perf-test.yaml/runs?event=repository_dispatch" \
+                      | jq -r '.workflow_runs | sort_by(.created_at) | last.id')
+
+            if [ "$run_id" != "null" ] && [ -n "$run_id" ]; then
+              break
+            fi
+
+            echo "Waiting for workflow run to appear..."
+            sleep 5
+          done
+
+          if [ -z "$run_id" ] || [ "$run_id" == "null" ]; then
+            echo "❌ Failed to capture triggered workflow run ID"
+            exit 1
+          fi
+
+          echo "✅ Triggered K6 workflow run ID: $run_id"
           echo "run_id=$run_id" >> $GITHUB_OUTPUT
 
       - name: Wait for K6 Workflow to Complete
         run: |
-          echo "⏳ Waiting for K6 workflow run ${{ steps.trigger.outputs.run_id }} to complete..."
+          echo " ⏳ Waiting for K6 workflow run ${{ steps.trigger.outputs.run_id }} to complete..."
 
           MAX_ATTEMPTS=40
           SLEEP_TIME=30
