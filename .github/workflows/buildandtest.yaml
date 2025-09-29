@@ -128,7 +128,7 @@ jobs:
             https://api.github.com/repos/hossainks/k6-performance-test/dispatches \
             -d '{"event_type":"run-k6-tests"}'
 
-           # Get the latest run id triggered by repository_dispatch
+          # Get the latest run id triggered by repository_dispatch
           run_id=$(curl -s -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" \
             "https://api.github.com/repos/hossainks/k6-performance-test/actions/runs?event=repository_dispatch" \
