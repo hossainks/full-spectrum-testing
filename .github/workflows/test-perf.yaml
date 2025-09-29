@@ -6,7 +6,6 @@ on:
   workflow_dispatch:
 jobs:
   k6-perf-test:
-    needs: [unit-test, integration-test, api-test]
     runs-on: ubuntu-latest
     steps:
       - name: Trigger K6 Tests
