@@ -143,19 +143,34 @@ jobs:
           echo "Waiting for K6 workflow to complete on k6-performance-test repo"
           run_url="${{ steps.trigger.outputs.url }}"
           echo "Tracking run: $run_url"
-          
-          for i in {1..30}; do
+
+          MAX_ATTEMPTS=40
+          SLEEP_TIME=30
+          ATTEMPT=1
+
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            # Get the latest workflow triggered by repository_dispatch
             runs=$(curl -s -H "Accept: application/vnd.github+json" \
               -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" \
-              "https://api.github.com/repos/hossainks/k6-performance-test/actions/runs?event=repository_dispatch&status=in_progress")
-            
-            if [ "$(echo $runs | jq '.total_count')" -eq 0 ]; then
-              echo "✅ K6 workflow completed."
-              exit 0
+              "https://api.github.com/repos/hossainks/k6-performance-test/actions/runs?event=repository_dispatch")
+
+            status=$(echo "$runs" | jq -r '.workflow_runs[0].status')
+            conclusion=$(echo "$runs" | jq -r '.workflow_runs[0].conclusion')
+
+            echo "Attempt $ATTEMPT/$MAX_ATTEMPTS - Status: $status, Conclusion: $conclusion"
+
+            if [ "$status" == "completed" ]; then
+              if [ "$conclusion" == "success" ]; then
+                echo "✅ K6 workflow finished successfully!"
+                exit 0
+              else
+                echo "❌ K6 workflow failed!"
+                exit 1
+              fi
             fi
-            
-            echo "⌛ Still running... check $i/30"
-            sleep 30
+
+            ATTEMPT=$((ATTEMPT+1))
+            sleep $SLEEP_TIME
           done
 
           echo "❌ Timeout waiting for K6 workflow"
