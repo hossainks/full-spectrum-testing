@@ -127,3 +127,36 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" \
             https://api.github.com/repos/hossainks/k6-performance-test/dispatches \
             -d '{"event_type":"run-k6-tests"}'
+
+          # Get the latest workflow run triggered by repository_dispatch
+          run_url=$(curl -s \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" \
+            "https://api.github.com/repos/hossainks/k6-performance-test/actions/runs?event=repository_dispatch" \
+            | jq -r '.workflow_runs[0].html_url')
+
+          echo "url=$run_url" >> $GITHUB_OUTPUT
+          echo "🔗 Workflow Run URL: $run_url"
+
+      - name: Wait for K6 Workflow to Complete
+        run: |
+          echo "Waiting for K6 workflow to complete on k6-performance-test repo"
+          run_url="${{ steps.trigger.outputs.url }}"
+          echo "Tracking run: $run_url"
+          
+          for i in {1..30}; do
+            runs=$(curl -s -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" \
+              "https://api.github.com/repos/hossainks/k6-performance-test/actions/runs?event=repository_dispatch&status=in_progress")
+            
+            if [ "$(echo $runs | jq '.total_count')" -eq 0 ]; then
+              echo "✅ K6 workflow completed."
+              exit 0
+            fi
+            
+            echo "⌛ Still running... check $i/30"
+            sleep 30
+          done
+
+          echo "❌ Timeout waiting for K6 workflow"
+          exit 1
