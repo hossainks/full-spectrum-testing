@@ -114,60 +114,64 @@ jobs:
       - name: Stop server
         run: docker compose down
 
-  # k6-perf-test:
-  #   needs: [unit-test, integration-test, api-test]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Trigger K6 Tests
-  #       id: trigger
-  #       run: |
-  #         echo " Triggering K6 workflow on k6-performance-test repo"
-  #         curl -X POST \
-  #           -H "Accept: application/vnd.github+json" \
-  #           -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" \
-  #           https://api.github.com/repos/hossainks/k6-performance-test/dispatches \
-  #           -d '{"event_type":"run-k6-tests"}'
+  k6-perf-test:
+    needs: [unit-test, integration-test, api-test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger K6 Tests
+        id: trigger
+        run: |
+          echo " Triggering K6 workflow on k6-performance-test repo"
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" \
+            https://api.github.com/repos/hossainks/k6-performance-test/dispatches \
+            -d '{"event_type":"run-k6-tests"}'
 
-  #         # Get the latest run id triggered by repository_dispatch
-  #         run_id=$(curl -s -H "Accept: application/vnd.github+json" \
-  #           -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" \
-  #           "https://api.github.com/repos/hossainks/k6-performance-test/actions/runs?event=repository_dispatch" \
-  #           | jq -r '.workflow_runs[0].id')
+          # Wait for the workflow to start
+          sleep 15 
 
-  #         echo "run_id=$run_id" >> $GITHUB_OUTPUT
+          # Get the latest run id triggered by repository_dispatch
+          run_id=$(
+          curl -s -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" \
+              "https://api.github.com/repos/hossainks/k6-performance-test/actions/runs?event=repository_dispatch" \
+          | jq -r '.workflow_runs | sort_by(.created_at) | last.id')
 
-  #     - name: Wait for K6 Workflow to Complete
-  #       run: |
-  #         echo "⏳ Waiting for K6 workflow run ${{ steps.trigger.outputs.run_id }} to complete..."
+          echo "run_id=$run_id" >> $GITHUB_OUTPUT
 
-  #         MAX_ATTEMPTS=40
-  #         SLEEP_TIME=30
-  #         ATTEMPT=1
-  #         run_id="${{ steps.trigger.outputs.run_id }}"
+      - name: Wait for K6 Workflow to Complete
+        run: |
+          echo "⏳ Waiting for K6 workflow run ${{ steps.trigger.outputs.run_id }} to complete..."
 
-  #         while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-  #           run=$(curl -s -H "Accept: application/vnd.github+json" \
-  #             -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" \
-  #             "https://api.github.com/repos/hossainks/k6-performance-test/actions/runs/$run_id")
+          MAX_ATTEMPTS=40
+          SLEEP_TIME=5
+          ATTEMPT=1
+          run_id="${{ steps.trigger.outputs.run_id }}"
 
-  #           status=$(echo "$run" | jq -r '.status')
-  #           conclusion=$(echo "$run" | jq -r '.conclusion')
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            run=$(curl -s -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" \
+              "https://api.github.com/repos/hossainks/k6-performance-test/actions/runs/$run_id")
 
-  #           echo "Attempt $ATTEMPT/$MAX_ATTEMPTS - Status: $status, Conclusion: $conclusion"
+            status=$(echo "$run" | jq -r '.status')
+            conclusion=$(echo "$run" | jq -r '.conclusion')
 
-  #           if [ "$status" == "completed" ]; then
-  #             if [ "$conclusion" == "success" ]; then
-  #               echo "✅ K6 workflow finished successfully!"
-  #               exit 0
-  #             else
-  #               echo "❌ K6 workflow failed!"
-  #               exit 1
-  #             fi
-  #           fi
+            echo "Attempt $ATTEMPT/$MAX_ATTEMPTS - Status: $status, Conclusion: $conclusion"
 
-  #           ATTEMPT=$((ATTEMPT+1))
-  #           sleep $SLEEP_TIME
-  #         done
+            if [ "$status" == "completed" ]; then
+              if [ "$conclusion" == "success" ]; then
+                echo "✅ K6 workflow finished successfully!"
+                exit 0
+              else
+                echo "❌ K6 workflow failed!"
+                exit 1
+              fi
+            fi
 
-  #         echo "❌ Timeout waiting for K6 workflow"
-  #         exit 1
+            ATTEMPT=$((ATTEMPT+1))
+            sleep $SLEEP_TIME
+          done
+
+          echo "❌ Timeout waiting for K6 workflow"
+          exit 1
