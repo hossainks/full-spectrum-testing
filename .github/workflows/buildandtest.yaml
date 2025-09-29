@@ -148,6 +148,7 @@ jobs:
           SLEEP_TIME=5
           ATTEMPT=1
           run_id="${{ steps.trigger.outputs.run_id }}"
+          run_url="https://github.com/hossainks/k6-performance-test/actions/runs/$run_id"
 
           while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
             run=$(curl -s -H "Accept: application/vnd.github+json" \
@@ -161,10 +162,12 @@ jobs:
 
             if [ "$status" == "completed" ]; then
               if [ "$conclusion" == "success" ]; then
-                echo "✅ K6 workflow finished successfully!"
+                echo " ✅ K6 workflow finished successfully!"
+                echo "🔗 Workflow URL: $run_url"
                 exit 0
               else
-                echo "❌ K6 workflow failed!"
+                echo " ❌ K6 workflow failed!"
+                echo "🔗 Workflow URL: $run_url"
                 exit 1
               fi
             fi
