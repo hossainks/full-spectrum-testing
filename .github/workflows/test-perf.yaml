@@ -35,7 +35,7 @@ jobs:
           echo "⏳ Waiting for K6 workflow run ${{ steps.trigger.outputs.run_id }} to complete..."
 
           MAX_ATTEMPTS=40
-          SLEEP_TIME=30
+          SLEEP_TIME=5
           ATTEMPT=1
           run_id="${{ steps.trigger.outputs.run_id }}"
 
