@@ -128,34 +128,30 @@ jobs:
             https://api.github.com/repos/hossainks/k6-performance-test/dispatches \
             -d '{"event_type":"run-k6-tests"}'
 
-          # Get the latest workflow run triggered by repository_dispatch
-          run_url=$(curl -s \
-            -H "Accept: application/vnd.github+json" \
+           # Get the latest run id triggered by repository_dispatch
+          run_id=$(curl -s -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" \
             "https://api.github.com/repos/hossainks/k6-performance-test/actions/runs?event=repository_dispatch" \
-            | jq -r '.workflow_runs[0].html_url')
+            | jq -r '.workflow_runs[0].id')
 
-          echo "url=$run_url" >> $GITHUB_OUTPUT
-          echo "🔗 Workflow Run URL: $run_url"
+          echo "run_id=$run_id" >> $GITHUB_OUTPUT
 
       - name: Wait for K6 Workflow to Complete
         run: |
-          echo "Waiting for K6 workflow to complete on k6-performance-test repo"
-          run_url="${{ steps.trigger.outputs.url }}"
-          echo "Tracking run: $run_url"
+          echo "⏳ Waiting for K6 workflow run ${{ steps.trigger.outputs.run_id }} to complete..."
 
           MAX_ATTEMPTS=40
           SLEEP_TIME=30
           ATTEMPT=1
+          run_id="${{ steps.trigger.outputs.run_id }}"
 
           while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-            # Get the latest workflow triggered by repository_dispatch
-            runs=$(curl -s -H "Accept: application/vnd.github+json" \
+            run=$(curl -s -H "Accept: application/vnd.github+json" \
               -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" \
-              "https://api.github.com/repos/hossainks/k6-performance-test/actions/runs?event=repository_dispatch")
+              "https://api.github.com/repos/hossainks/k6-performance-test/actions/runs/$run_id")
 
-            status=$(echo "$runs" | jq -r '.workflow_runs[0].status')
-            conclusion=$(echo "$runs" | jq -r '.workflow_runs[0].conclusion')
+            status=$(echo "$run" | jq -r '.status')
+            conclusion=$(echo "$run" | jq -r '.conclusion')
 
             echo "Attempt $ATTEMPT/$MAX_ATTEMPTS - Status: $status, Conclusion: $conclusion"
 
