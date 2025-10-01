@@ -2,7 +2,7 @@ name: Full Spectrum Testing
 on:
   push:
     branches:
-      - main
+      - e2e-test
   workflow_dispatch:
 jobs:
   unit-test:
