@@ -10,6 +10,12 @@ module.exports = {
     coverageDirectory: 'coverage',
     coverageReporters: ['text-summary', 'text', 'html'],
 
+    // ignore all Playwright tests
+    testPathIgnorePatterns: [
+        "/node_modules/",
+        "/test-e2e/"
+    ],
+
     // Reporters configuration
     reporters: [
         'default',

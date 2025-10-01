@@ -2,7 +2,7 @@ name: Full Spectrum Testing
 on:
   push:
     branches:
-      - main
+      - e2e-test
   workflow_dispatch:
 jobs:
   unit-test:
@@ -178,3 +178,45 @@ jobs:
 
           echo "❌ Timeout waiting for K6 workflow"
           exit 1
+
+  e2e-test:
+    needs: [unit-test, integration-test, api-test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+          cache-dependency-path: "package-lock.json"
+
+      - name: Install dependencies
+        working-directory: ./test-e2e
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        working-directory: ./test-e2e
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        working-directory: ./test-e2e
+        run: npx playwright test
+
+      - name: Upload Playwright test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: E2E-test-results
+          path: ./test-e2e/playwright-report
+          retention-days: 30
+
+      - name: Publish Playwright E2E Test Report
+        uses: dorny/test-reporter@v2
+        if: always()
+        with:
+          name: E2E Tests
+          path: ./test-e2e/test-results/*.xml
+          reporter: jest-junit
