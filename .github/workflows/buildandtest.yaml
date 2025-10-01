@@ -204,3 +204,19 @@ jobs:
       - name: Run Playwright tests
         working-directory: ./test-e2e
         run: npx playwright test
+
+      - name: Upload Playwright test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: E2E-test-results
+          path: ./test-e2e/playwright-report
+          retention-days: 30
+
+      - name: Publish Playwright E2E Test Report
+        uses: dorny/test-reporter@v2
+        if: always()
+        with:
+          name: E2E Tests
+          path: ./test-e2e/test-results/*.xml
+          reporter: jest-junit
