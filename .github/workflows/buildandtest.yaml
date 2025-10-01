@@ -202,5 +202,5 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright tests
-        working-directory: ./test-e2e/test
+        working-directory: ./test-e2e
         run: npx playwright test
