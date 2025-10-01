@@ -6,7 +6,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? undefined : undefined,
-  reporter: 'html',
+  reporter: [
+    ['html', { open: 'never' }],
+    ['junit', { outputFile: 'test-results/test-results.xml' }],
+  ],
   use: {
     baseURL: 'https://fast.com/',
     trace: 'on-first-retry',
