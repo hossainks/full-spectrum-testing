@@ -96,13 +96,12 @@ flowchart TD
 * **E2E Tests** → Playwright HTML reports + JUnit XML
 
 
-### 5️⃣ End-to-End (E2E) Tests
+### 🌐 End-to-End (E2E) Tests
 
 * Tool: **Playwright**
 * Scope: UI tests from browser.
 * Config: Located in `test-e2e/`
 * Command:
-
   ```bash
   npx playwright test
   ```
