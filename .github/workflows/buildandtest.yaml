@@ -178,3 +178,29 @@ jobs:
 
           echo "❌ Timeout waiting for K6 workflow"
           exit 1
+
+  e2e-test:
+    needs: [unit-test, integration-test, api-test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+          cache-dependency-path: "package-lock.json"
+
+      - name: Install dependencies
+        working-directory: ./test-e2e
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        working-directory: ./test-e2e
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        working-directory: ./test-e2e
+        run: npx playwright test
