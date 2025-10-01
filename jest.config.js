@@ -1,10 +1,8 @@
 module.exports = {
     testEnvironment: 'node',
     testMatch: [
-        "**/tests/unit/**/*.spec.js",
-        "**/tests/unit/**/*.test.js",
-        "**/tests/integration/**/*.spec.js",
-        "**/tests/integration/**/*.test.js"
+        "**/tests/**/*.spec.js",
+        "**/tests/**/*.test.js"
     ],
 
     // Coverage configuration
