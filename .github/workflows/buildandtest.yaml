@@ -108,7 +108,7 @@ jobs:
           npx wait-port http://localhost:3000/health -t 30000
 
       - name: Run API tests
-        working-directory: ./test-api
+        working-directory: ./test-api/api
         run: npx newman run Book-App.postman_collection.json
 
       - name: Stop server
